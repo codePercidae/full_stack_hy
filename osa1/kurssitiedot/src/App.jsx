@@ -1,18 +1,16 @@
 //Shows the course name
-const Header = (props) => {
-  console.log(props);
+const Header = ({course_name}) => {
   return (
   <div>
     <h1>
-      {props.course_name}
+      {course_name}
     </h1>
   </div>
   )
 }
 
 //Shows the contents of the course
-const Content = (props) => {
-  const parts = props.parts
+const Content = ({parts}) => {
   return (
     <div>
       <Part part={parts[0].name} ex={parts[0].exercises}/>
@@ -23,8 +21,7 @@ const Content = (props) => {
 }
 
 //Shows total number of exerices
-const Total = (props) => {
-  const parts = props.parts
+const Total = ({parts}) => {
   return (
     <div>
       <p>Number of exercises {parts[0].exercises + parts[1].exercises + parts[2].exercises}</p>
@@ -33,9 +30,9 @@ const Total = (props) => {
 }
 
 //Helper function for _Content_
-const Part = (props) => {
+const Part = ({part, ex}) => {
   return (
-    <p>{props.part} {props.ex}</p>
+    <p>{part} {ex}</p>
   )
 }
 
