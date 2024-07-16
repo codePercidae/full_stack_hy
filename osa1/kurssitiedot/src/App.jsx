@@ -12,20 +12,22 @@ const Header = (props) => {
 
 //Shows the contents of the course
 const Content = (props) => {
+  const parts = props.parts
   return (
     <div>
-      <Part part={props.parts[0].name} ex={props.parts[0].exercises}/>
-      <Part part={props.parts[1].name} ex={props.parts[1].exercises}/>
-      <Part part={props.parts[2].name} ex={props.parts[2].exercises}/>
+      <Part part={parts[0].name} ex={parts[0].exercises}/>
+      <Part part={parts[1].name} ex={parts[1].exercises}/>
+      <Part part={parts[2].name} ex={parts[2].exercises}/>
     </div>
   )
 }
 
 //Shows total number of exerices
 const Total = (props) => {
+  const parts = props.parts
   return (
     <div>
-      <p>Number of exercises {props.parts[0].exercises + props.parts[1].exercises + props.parts[2].exercises}</p>
+      <p>Number of exercises {parts[0].exercises + parts[1].exercises + parts[2].exercises}</p>
     </div>
   )
 }
