@@ -4,12 +4,18 @@ const Header = ({header}) => {
   return <h1>{header}</h1>
 }
 
-const ShowStatistic = ({good, neutral, bad}) => {
+const Statistic = ({good, neutral, bad}) => {
   const total = good+bad+neutral
-  const average = total/3
-  const positive = good / total
-  console.log(good, neutral, bad)
-  return (
+  const average = (good-bad)/total
+  const positive = (good / total)*100
+  if (total === 0) 
+    {return (
+    <div>
+      <p>
+        No feedback given
+      </p>
+    </div>)
+  } else return (
     <div>
       <p>
         good {good} <br />
@@ -39,7 +45,7 @@ const App = () => {
       <button onClick={() => setNeutral(neutral + 1)}>neutral</button>
       <button onClick={() => setBad(bad + 1)}>bad</button>
       <Header header={stats}></Header>
-      <ShowStatistic good={good} neutral={neutral} bad={bad}/>
+      <Statistic good={good} neutral={neutral} bad={bad}/>
     </div>
   )
 }
