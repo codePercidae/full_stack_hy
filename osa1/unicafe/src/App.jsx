@@ -16,17 +16,38 @@ const Statistic = ({good, neutral, bad}) => {
       </p>
     </div>)
   } else return (
-    <div>
-      <StatisticLine text="good" value={good}/>
-      <StatisticLine text="neutral" value={neutral}/>
-      <StatisticLine text="bad" value={bad}/>
-      <StatisticLine text="total" value={total}/>
-      <StatisticLine text="average" value={average}/>
-      <StatisticLine text="positive" value={positive} percent={true}/>
-    </div>
+    <table>
+      <tbody>
+        <tr>
+          <td>good</td>
+          <td>{good}</td>
+        </tr>
+        <tr>
+          <td>bad</td>
+          <td>{bad}</td>
+        </tr>
+        <tr>
+          <td>neutral</td>
+          <td>{neutral}</td>
+        </tr>
+        <tr>
+          <td>total</td>
+          <td>{total}</td>
+        </tr>
+        <tr>
+          <td>average</td>
+          <td>{average}</td>
+        </tr>
+        <tr>
+          <td>positive</td>
+          <td>{positive.toFixed(1)}%</td>
+        </tr>
+        </tbody>
+    </table>
   )
 }
 
+//Obsolete since I couldn't figure out how StatisticLine could be used to generate table
 const StatisticLine = ({text, value, percent}) => {
   if (percent === true) {
     return (
