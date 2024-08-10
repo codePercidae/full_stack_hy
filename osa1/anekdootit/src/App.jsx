@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { createLogger } from 'vite'
 
 const Header = ({header}) => {
   return (
@@ -43,6 +44,7 @@ const App = () => {
     setVotes(newVotes)
   }
 
+  
   console.log(votes[selected])
 
   return (
