@@ -1,9 +1,10 @@
-const Header = (props) => {
-  return <h1>{props.course}</h1>
+const Header = ({name}) => {
+  return <h1>{name}</h1>
 }
 
-const Total = (props) => {
-  return <p>Number of exercises {props.sumOfExercises}</p>
+const Total = ({parts}) => {
+  const total = parts.reduce((p, c) => p+c.exercises, 0)
+  return <b>Number of exercises {total}</b>
 }
 
 const Part = (props) => {
@@ -14,37 +15,74 @@ const Part = (props) => {
   )
 }
 
-const Content = (props) => {
+const Content = ({parts}) => {
+  //console.log(parts)
   return (
     <div>
-      <Part part={props.part1} exercises1={props.exercises1} />
-      <Part part={props.part2} exercises1={props.exercises2} />
-      <Part part={props.part3} exercises1={props.exercises3} />
+      {parts.map(part => <p key={part.id}>{part.name} {part.exercises}</p>)}
+    </div>
+  )
+}
+
+const Course = ({course}) => {
+  return (
+    <div>
+      <Header name={course.name}/>
+      <Content parts={course.parts}/>
+      <Total parts={course.parts}/>
     </div>
   )
 }
 
 const App = () => {
-  const course = 'Half Stack application development'
-  const part1 = 'Fundamentals of React'
-  const exercises1 = 10
-  const part2 = 'Using props to pass data'
-  const exercises2 = 7
-  const part3 = 'State of a component'
-  const exercises3 = 14
+  const courses = [
+    {
+      name: 'Half Stack application development',
+      id: 1,
+      parts: [
+        {
+          name: 'Fundamentals of React',
+          exercises: 10,
+          id: 1
+        },
+        {
+          name: 'Using props to pass data',
+          exercises: 7,
+          id: 2
+        },
+        {
+          name: 'State of a component',
+          exercises: 14,
+          id: 3
+        },
+        {
+          name: 'Redux',
+          exercises: 11,
+          id: 4
+        }
+      ]
+    }, 
+    {
+      name: 'Node.js',
+      id: 2,
+      parts: [
+        {
+          name: 'Routing',
+          exercises: 3,
+          id: 1
+        },
+        {
+          name: 'Middlewares',
+          exercises: 7,
+          id: 2
+        }
+      ]
+    }
+  ]
 
   return (
     <div>
-      <Header course={course} />
-      <Content
-        part1={part1}
-        exercises1={exercises1}
-        part2={part2}
-        exercises2={exercises2}
-        part3={part3}
-        exercises3={exercises3}
-      />
-      <Total sumOfExercises={exercises1 + exercises2 + exercises3} />
+      {courses.map(course => <Course key={course.id} course={course}/>)}
     </div>
   )
 }
