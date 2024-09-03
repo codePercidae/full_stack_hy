@@ -1,5 +1,10 @@
 import { useState } from 'react'
 
+const checkNames = ({newName, persons}) => {
+  let boolArray = persons.map((name) => name !== newName)
+  return boolArray.reduce((p, c) => p === c)
+}
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas' }
@@ -8,8 +13,14 @@ const App = () => {
 
   const addName = (event) => {
     event.preventDefault()
-    const nameObject = [{name: newName}]
-    setPersons(persons.concat(nameObject))
+    console.log(checkNames({newName, persons}))
+    if (checkNames({newName, persons})){
+      alert(`${newName} is already added to phonebook`)
+    }
+    else {
+      const nameObject = [{name: newName}]
+      setPersons(persons.concat(nameObject))
+    }
     setNewName('')
   }
 
@@ -32,7 +43,6 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       {persons.map(person => <p key={person.name}>{person.name}</p>)}
-      debug: {newName}
     </div>
   )
 
