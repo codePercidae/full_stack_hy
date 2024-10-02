@@ -54,8 +54,13 @@ const App = () => {
     event.preventDefault()
 
     if (checkNames({newName, persons})){
-      const nameObject = [{name: newName, number: newNumber}]
-      setPersons(persons.concat(nameObject))
+      const nameObject = {name: newName, number: newNumber}
+      setPersons(persons.concat([nameObject]))
+      axios
+        .post('http://localhost:3001/persons', nameObject)
+        .then(response => {
+          console.log(response)
+        })
     }
 
     else {
