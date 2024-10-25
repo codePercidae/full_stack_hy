@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
+import './index.css'
 
 
 const checkNames = ({newName, persons}) => {
@@ -42,12 +43,35 @@ const DelBtn = ({id, handler}) => {
     <button onClick={() => handler(id)}>delete</button>
   )
 }
+const Alert = ({message}) => {
+  if (message === null) {
+    return null
+  }
+  return (
+    <div className='alert'>
+      {message}
+    </div>
+  )
+}
+
+const Error = ({message}) => {
+  if (message === null) {
+    return null
+  }
+  return (
+    <div className='error'>
+      {message}
+    </div>
+  )
+}
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [newAlert, setAlert] = useState(null)
+  const [newError, setError] = useState(null)
 
   const namesToShow = persons.filter(person => person.name.toLowerCase().includes((newFilter).toLowerCase()))
 
@@ -70,6 +94,10 @@ const App = () => {
         .create(nameObject)
         .then(initialPerson => {
           setPersons(persons.concat(initialPerson))
+          setAlert(`${newName} added succesfully to phonebook!`)
+          setTimeout(() => {
+            setAlert(null)
+          }, 5000)
       })
     }
 
@@ -81,8 +109,16 @@ const App = () => {
           .then(initialPerson => {
             const updatedPersons = persons.map(p => p.id === idToUpdate ? initialPerson : p)
             setPersons(updatedPersons)
+            setAlert(`Number changed succesfully!`)
+            setTimeout(() => {
+              setAlert(null)
+            }, 5000)})
+          .catch(error => {
+            console.log('Something went terribly wrong...')
+            setError(`Number update failed! ${newName} is already deleted from the phonebook.`)
+            setPersons(persons.filter(p => p.id !== idToUpdate))
           })
-      }
+      } 
     }
     
     setNewName('')
@@ -90,10 +126,14 @@ const App = () => {
   }
 
   function handleDelete(id) {
-    if (window.confirm(`Delete ${(persons.find(p => p.id === id).name)}?`)) { 
+    const nameToDelete = persons.find(p => p.id === id).name
+    if (window.confirm(`Delete ${nameToDelete}?`)) { 
       personService
         .del(id)
-        .then(setPersons(persons.filter(p => p.id !== id)))
+        .then(() => {
+          setPersons(persons.filter(p => p.id !== id))
+          setAlert(`${nameToDelete} deleted succesfully!`)
+        }) 
     }
   }
 
@@ -115,6 +155,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Alert message={newAlert}/>
+      <Error message={newError}/>
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange}/>
       <h2>add a new</h2>
       <PersonForm addName={addName} newName={newName} newNumber={newNumber} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange}/>
