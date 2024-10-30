@@ -9,8 +9,9 @@ const getAll = () => {
     return request.then(response => response.data)
 }
 
-const getOne = ({name}) => {
-    const request = axios.get(`${baseUrl}api/name/{${name}}`)
+const getOne = (name) => {
+    console.log(name)
+    const request = axios.get(`${baseUrl}api/name/${name}`)
     return request.then(response => response.data)
 }
 
