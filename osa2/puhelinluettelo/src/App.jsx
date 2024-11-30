@@ -133,6 +133,7 @@ const App = () => {
         .then(() => {
           setPersons(persons.filter(p => p.id !== id))
           setAlert(`${nameToDelete} deleted succesfully!`)
+          setTimeout(() => {setAlert(null)}, 5000)
         }) 
     }
   }
