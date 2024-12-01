@@ -1,0 +1,9 @@
+POST HTTP://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title": "Otsikko",
+    "authon": "Kalle",
+    "url": "www.blogiteksti.esim",
+    "likes": 5
+}
