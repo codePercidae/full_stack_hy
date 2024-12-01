@@ -97,8 +97,12 @@ const App = () => {
           setAlert(`${newName} added succesfully to phonebook!`)
           setTimeout(() => {
             setAlert(null)
-          }, 5000)
-      })
+          }, 5000)})
+        .catch(error => {
+          setError(`An error occurred while saving new entry! Make sure that name and number are in correct form.`)
+          setTimeout(() => {setError(null)}, 5000)
+          console.log(error.response.data)
+        })
     }
 
     else {
@@ -113,10 +117,11 @@ const App = () => {
             setTimeout(() => {
               setAlert(null)
             }, 5000)})
-          .catch(error => {
+          .catch(() => {
             console.log('Something went terribly wrong...')
             setError(`Number update failed! ${newName} is already deleted from the phonebook.`)
             setPersons(persons.filter(p => p.id !== idToUpdate))
+            setTimeout(() => setError(null), 5000)
           })
       } 
     }
