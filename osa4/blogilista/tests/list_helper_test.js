@@ -117,7 +117,7 @@ describe('most likes', () => {
   })
 })
 
-describe('most likes', () => {
+describe('most blogs', () => {
 
   test('when list has one blog, returns the author of that blog and 1', () => {
     const result = JSON.stringify(listHelper.mostBlogs(listWithOneBlog))
@@ -133,6 +133,31 @@ describe('most likes', () => {
     const actual = JSON.stringify({
       author: 'Robert C. Martin',
       blogs: 3
+    })
+    assert.strictEqual(result, actual)
+  })
+})
+
+describe('most likes', () => {
+  test('when list has no blogs, return null', () => {
+    const result = listHelper.mostLikes([])
+    assert.strictEqual(result, null)
+  })
+
+  test('when list has one blog, return that author and likes of that blog', () => {
+    const result = JSON.stringify(listHelper.mostLikes(listWithOneBlog))
+    const actual = JSON.stringify({
+      author: 'Edsger W. Dijkstra',
+      likes: 5
+    })
+    assert.strictEqual(result, actual)
+  })
+
+  test('when list has many blogs, return author with most likes and the amount of likes', () => {
+    const result = JSON.stringify(listHelper.mostLikes(listWithManyBlogs))
+    const actual = JSON.stringify({
+      author: 'Edsger W. Dijkstra',
+      likes: 17
     })
     assert.strictEqual(result, actual)
   })
