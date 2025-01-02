@@ -88,14 +88,15 @@ describe('total likes', () => {
   })
 })
 
-describe('most likes', () => {
+describe('most liked blog', () => {
 
   test('return null if no blogs in list', () => {
     const result = listHelper.favoriteBlog([])
     assert.strictEqual(result, null)
   })
 
-  //due to JS comparison, objects are being turned to strings in order to avoid chaos
+  //due to JS comparison, objects are being turned to strings in order to avoid chaos.
+  //apparently deepEqual would have sloved this, but it is what it is.
   test('when list has one blog, return that blog', () => {
     const result = JSON.stringify(listHelper.favoriteBlog(listWithOneBlog))
     const actual = JSON.stringify({
@@ -138,7 +139,7 @@ describe('most blogs', () => {
   })
 })
 
-describe('most likes', () => {
+describe('most liked author', () => {
   test('when list has no blogs, return null', () => {
     const result = listHelper.mostLikes([])
     assert.strictEqual(result, null)
