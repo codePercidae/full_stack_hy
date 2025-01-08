@@ -3,7 +3,7 @@ const assert = require('node:assert')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('./../app')
-const Blog = require('./../models/blog')
+const Blog = require('../models/blog')
 const helper = require('./test_helper')
 
 const api = supertest(app)
@@ -14,7 +14,7 @@ beforeEach(async () => {
   await Blog.insertMany(initialBlogs)
 })
 
-describe('GET', () => {
+describe('Blog GET', () => {
 
   test('GET returns blogs as JSON', async () => {
     await api
@@ -33,7 +33,7 @@ test('blogs are identified by id', async () => {
   assert.strictEqual(response.body[0].id, '5a422a851b54a676234d17f7')
 })
 
-describe('POST', () => {
+describe('Blog POST', () => {
 
   test('amount of blogs grows by one', async () => {
     await api
@@ -69,7 +69,7 @@ describe('POST', () => {
   })
 })
 
-describe('DELETE', () => {
+describe('Blog DELETE', () => {
 
   test('delete removes blog from DB', async () => {
     const blogsInStart = await helper.blogsInDb()
@@ -90,9 +90,9 @@ describe('DELETE', () => {
   })
 })
 
-describe.only('UPDATE', () => {
+describe('Blog UPDATE', () => {
 
-  test.only('updates element successfully', async () => {
+  test('updates element successfully', async () => {
     const updatedBlog = {
       title: 'React patterns',
       author: 'Michael Chan',
@@ -110,7 +110,7 @@ describe.only('UPDATE', () => {
     assert.deepStrictEqual(blogInDb, updatedBlog)
   })
 
-  test.only('update to non-existing id causes exception', async () => {
+  test('update to non-existing id causes exception', async () => {
     const updatedBlog = {
       title: 'React patterns',
       author: 'Michael Chan',
@@ -124,7 +124,6 @@ describe.only('UPDATE', () => {
       .expect(400)
   })
 })
-
 
 after(async () => {
   await mongoose.connection.close()
