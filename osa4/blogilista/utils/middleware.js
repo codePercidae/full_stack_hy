@@ -21,9 +21,9 @@ const errorHandler = (error, request, response, next) => {
     return response.status(400).send({ error: 'Invalid id' })
   } else if (error.name === 'MongoServerError' && error.message.includes('E11000 duplicate key error')){
     return response.status(400).send({ error: 'Username already in use!' })
-  } else if (error.message === 'password must be at least 4 characters long!'){
+  } else if (error.message === 'password length'){
     return response.status(400).send({ error: 'password must be at least 4 characters long!' })
-  } else if (error.message === 'username must be at least 4 characters long!'){
+  } else if (error.message === 'username length'){
     return response.status(400).send({ error: 'username must be at least 4 characters long!' })
   }
   next(error)

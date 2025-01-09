@@ -3,7 +3,8 @@ Content-Type: application/json
 
 {
     "title": "Otsikko",
-    "authon": "Kalle",
+    "author": "Kalle",
     "url": "www.blogiteksti.esim",
-    "likes": 5
+    "likes": 5,
+    "userId": "677f96382512c9ee7e59c284"
 }
