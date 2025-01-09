@@ -1,5 +1,6 @@
 POST HTTP://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: Bearer 
 
 {
     "title": "Otsikko",
