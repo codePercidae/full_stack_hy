@@ -1,10 +1,26 @@
 const logger = require('./logger')
+const User = require('../models/user')
 
 const requestLogger = (request, response, next) => {
   logger.info('Method: ', request.method)
   logger.info('Path: ', request.path)
   logger.info('Body: ', request.body)
   logger.info('-|-|-|-')
+  next()
+}
+
+const tokenExtractor = (request, response, next) => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.startsWith('Bearer ')){
+    request.token = authorization.replace('Bearer ', '')
+  }
+  next()
+}
+
+const userExtractor = async (request, response, next) => {
+  const result = await User.findById(request.body.user)
+  console.log('Pyyntö', request.body)
+  request.user = result
   next()
 }
 
@@ -26,11 +42,13 @@ const errorHandler = (error, request, response, next) => {
   } else if (error.message === 'username length'){
     return response.status(400).send({ error: 'username must be at least 4 characters long!' })
   } else if (error.name === 'JsonWebTokenError'){
-    return response.status(400).send({ error: 'Invalid or missing token!' })
+    return response.status(401).send({ error: 'Invalid or missing token!' })
+  } else if (error.name === 'TokenExpiredError'){
+    return response.status(401).send({ error: 'Token expired!' })
   }
   next(error)
 }
 
 module.exports = {
-  errorHandler, requestLogger, unknownEndpoint
+  errorHandler, requestLogger, unknownEndpoint, tokenExtractor, userExtractor
 }
