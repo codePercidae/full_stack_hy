@@ -1,6 +1,6 @@
 POST HTTP://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkthbGxlSyIsImlkIjoiNjc3Zjk2MzgyNTEyYzllZTdlNTljMjg0IiwiaWF0IjoxNzM2NDk2NDkxfQ.MnYUAF24LQEDiG1IrBUp3Dv2N3_SHTXZIkMwANhRr50
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkthbGxlSyIsImlkIjoiNjc3Zjk2MzgyNTEyYzllZTdlNTljMjg0IiwiaWF0IjoxNzM2NzY4NzgwLCJleHAiOjE3MzY3NzIzODB9.iDAscl4Q8rKQcoEa61sa9fKVy2KTlxkBgOqn0lJXidI
 
 {
     "title": "Otsikko",

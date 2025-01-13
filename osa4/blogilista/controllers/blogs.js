@@ -17,8 +17,7 @@ blogsRouter.delete('/:id', async (request, response, next) => {
     }
 
     const blogToDelete = await Blog.findById(request.params.id)
-    console.log('Blogi', blogToDelete)
-    console.log('Token', decodedToken.id)
+
     if (decodedToken.id.toString() === blogToDelete.user.toString()){
       await Blog.findByIdAndDelete(request.params.id)
       return response.status(204).end()
@@ -39,7 +38,9 @@ blogsRouter.post('/', async (request, response, next) => {
     }
 
     const user = request.user
-    console.log('Käyttäjä', user)
+    if(!user){
+      return response.status(400).json({ error: 'User not found!' })
+    }
 
     const blog = new Blog({
       id: body.id,
@@ -49,6 +50,7 @@ blogsRouter.post('/', async (request, response, next) => {
       likes: body.likes || 0,
       user: user.id
     })
+
     const savedBlog = await blog.save()
     user.blogs = user.blogs.concat(savedBlog._id)
     await user.save()

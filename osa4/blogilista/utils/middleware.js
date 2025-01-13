@@ -19,7 +19,6 @@ const tokenExtractor = (request, response, next) => {
 
 const userExtractor = async (request, response, next) => {
   const result = await User.findById(request.body.user)
-  console.log('Pyyntö', request.body)
   request.user = result
   next()
 }

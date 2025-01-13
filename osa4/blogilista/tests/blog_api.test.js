@@ -10,7 +10,6 @@ const User = require('../models/user')
 const api = supertest(app)
 
 beforeEach(async () => {
-  //?????????
   await User.deleteMany({})
   const user = new User(helper.testUser)
   user.save()
