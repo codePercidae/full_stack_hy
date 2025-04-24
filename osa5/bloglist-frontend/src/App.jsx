@@ -29,6 +29,9 @@ const Error = ({ message }) => {
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
+  const [blogTitle, setBlogTitle] = useState('')
+  const [blogAuthor, setBlogAuthor] = useState('')
+  const [blogUrl, setBlogUrl] = useState('')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -40,6 +43,65 @@ const App = () => {
   //    setBlogs( blogs )
   //  )  
   //}, [])
+
+  useEffect(() => {
+    const loggedTokenJSON = window.localStorage.getItem('loggedBlogAppUser')
+    if (loggedTokenJSON) {
+      const token = JSON.parse(loggedTokenJSON)
+      userService.getOne(token.id).then(user => setUser(user))
+      blogService.setToken(token.token)
+    }
+  }, [])
+
+  const handleNewBlog = async (event) => {
+    event.preventDefault()
+    const blogObject = {
+      title: blogTitle,
+      author: blogAuthor,
+      url: blogUrl,
+      userId: user.id
+    }
+    try {
+      const response = await blogService.create(blogObject)
+      setBlogAuthor('')
+      setBlogTitle('')
+      setBlogUrl('')
+      setAlertMessage(`${blogTitle} by ${blogAuthor} added succesfully!`)
+      setTimeout(() => setAlertMessage(null), 5000)
+      return response.data
+    } catch (exception) {
+      setErrorMessage('An error occurred while adding new blog!')
+      setTimeout(() => setErrorMessage(null), 5000)
+    }
+  }
+
+  const blogForm = () => {
+    return (
+    <form onSubmit={handleNewBlog}>
+      <div>
+        <h2>Create new blog</h2>
+        title: 
+          <input
+            type='text'
+            value={blogTitle}
+            name='Title'
+            onChange={({ target }) => setBlogTitle(target.value)}/><br/>
+        author: 
+          <input
+            type='text'
+            value={blogAuthor}
+            name='Author'
+            onChange={({ target }) => setBlogAuthor(target.value)}/><br/>
+        url: 
+          <input
+            type='text'
+            value={blogUrl}
+            name='Url'
+            onChange={({ target }) => setBlogUrl(target.value)}/>
+      </div>
+      <button type='submit'>create</button>
+    </form>
+  )}
 
   const loginForm = () => {
     return (
@@ -67,28 +129,40 @@ const App = () => {
       </form>
   )}
 
-  const showUser = (user, blogs) => {
-    console.log(blogs)
+  const showUser = ( user ) => {
     return (
       <div>
         <p>
-          {user.name} logged in <br />
+          {user.name} logged in
         </p>
+        <button onClick={handleLogout}>logout</button>
         <ul>
-          {blogs.map((b) => <Blog key={b.id} blog={b}/>)}
+          {user.blogs.map((b) => <Blog key={b.id} blog={b}/>)}
         </ul>
       </div>
     )
   }
 
+  const handleLogout = async (event) => {
+    event.preventDefault()
+    window.localStorage.clear()
+    setUser(null)
+    setBlogs([])
+    window.location.reload()
+  }
+ 
   const handleLogin = async (event) => {
     event.preventDefault()
     var new_user = null
     try {
-      new_user = await loginService.login({ username, password })
-      setUser(new_user)
+      var token = await loginService.login({ username, password })
+      window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(token))
       setUsername('')
       setPassword('')
+      new_user = await userService.getOne(token.id)
+      setBlogs(new_user.blogs)
+      blogService.setToken(token.token)
+      setUser(new_user)
       setAlertMessage('Login succesfull')
       setTimeout(() => setAlertMessage(null), 5000)
     } catch (exception) {
@@ -97,15 +171,6 @@ const App = () => {
       setPassword('')
       setTimeout(() => setErrorMessage(null), 5000)
     }
-    try {
-      const userData = await userService.getOne(new_user.id)
-      setBlogs(userData.blogs)
-      console.log('User data aquired!')
-    }
-    catch(exception){
-      console.log('Error while fetching user data! ', exception)
-    }
-    return
   }
 
   return (
@@ -114,9 +179,9 @@ const App = () => {
       <Alert message={alertMessage}/>
       <Error message={errorMessage}/>
       {!user && loginForm()}
-      {user && showUser(user, blogs)}
+      {user && showUser(user)}
+      {user && blogForm()}
     </div>
   )
 }
-
 export default App

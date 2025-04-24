@@ -38,6 +38,7 @@ blogsRouter.post('/', async (request, response, next) => {
     }
 
     const user = request.user
+    console.log(user)
     if(!user){
       return response.status(400).json({ error: 'User not found!' })
     }

@@ -13,12 +13,14 @@ const tokenExtractor = (request, response, next) => {
   const authorization = request.get('authorization')
   if (authorization && authorization.startsWith('Bearer ')){
     request.token = authorization.replace('Bearer ', '')
+    console.log(request.token)
   }
   next()
 }
 
 const userExtractor = async (request, response, next) => {
-  const result = await User.findById(request.body.user)
+  console.log(request.body)
+  const result = await User.findById(request.body.userId)
   request.user = result
   next()
 }
