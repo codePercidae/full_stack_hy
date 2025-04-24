@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import LoginForm from './components/Login'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import userService from './services/users'
@@ -28,6 +29,7 @@ const Error = ({ message }) => {
 }
 
 const App = () => {
+  //states
   const [blogs, setBlogs] = useState([])
   const [blogTitle, setBlogTitle] = useState('')
   const [blogAuthor, setBlogAuthor] = useState('')
@@ -38,12 +40,7 @@ const App = () => {
   const [alertMessage, setAlertMessage] = useState(null)
   const [errorMessage , setErrorMessage] = useState(null)
 
-  //useEffect(() => {
-  //  blogService.getAll().then(blogs =>
-  //    setBlogs( blogs )
-  //  )  
-  //}, [])
-
+  //effects
   useEffect(() => {
     const loggedTokenJSON = window.localStorage.getItem('loggedBlogAppUser')
     if (loggedTokenJSON) {
@@ -53,6 +50,7 @@ const App = () => {
     }
   }, [])
 
+  //handlers
   const handleNewBlog = async (event) => {
     event.preventDefault()
     const blogObject = {
@@ -73,6 +71,54 @@ const App = () => {
       setErrorMessage('An error occurred while adding new blog!')
       setTimeout(() => setErrorMessage(null), 5000)
     }
+  }
+
+  const handleLogout = async (event) => {
+    event.preventDefault()
+    window.localStorage.clear()
+    setUser(null)
+    setBlogs([])
+    window.location.reload()
+  }
+
+  const handleLogin = async (event) => {
+    event.preventDefault()
+    var new_user = null
+    try {
+      var token = await loginService.login({ username, password })
+      window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(token))
+      setUsername('')
+      setPassword('')
+      new_user = await userService.getOne(token.id)
+      setBlogs(new_user.blogs)
+      blogService.setToken(token.token)
+      setUser(new_user)
+      setAlertMessage('Login succesfull')
+      setTimeout(() => setAlertMessage(null), 5000)
+    } catch (exception) {
+      setErrorMessage('Invalid login credentials!')
+      setUsername('')
+      setPassword('')
+      setTimeout(() => setErrorMessage(null), 5000)
+    }
+  }
+
+  const handleUsernameChange = ({ target }) => {
+    setUsername(target.value)
+  } 
+
+  const handlePasswordChange = ({ target }) => {
+    setPassword(target.value)
+  }
+
+  //forms
+  const loginForm = () => {
+    return (
+      <div>
+        <LoginForm handleLogin={handleLogin} handlePasswordChange={handlePasswordChange}
+          handleUsernameChange={handleUsernameChange} password={password} username={username}/>
+      </div>
+    )
   }
 
   const blogForm = () => {
@@ -103,32 +149,7 @@ const App = () => {
     </form>
   )}
 
-  const loginForm = () => {
-    return (
-      <form onSubmit={handleLogin}>
-        <div>
-          <h2>Login</h2>
-          username
-            <input
-            type='text'
-            value={username}
-            name='Username'
-            onChange={({ target }) => setUsername(target.value)}
-            />
-        </div>
-        <div>
-          password
-            <input
-            type='password'
-            value={password}
-            name='Password'
-            onChange={({ target }) => setPassword(target.value)}
-            />
-        </div>
-        <button type='submit'>login</button>
-      </form>
-  )}
-
+  //misc components
   const showUser = ( user ) => {
     return (
       <div>
@@ -141,36 +162,6 @@ const App = () => {
         </ul>
       </div>
     )
-  }
-
-  const handleLogout = async (event) => {
-    event.preventDefault()
-    window.localStorage.clear()
-    setUser(null)
-    setBlogs([])
-    window.location.reload()
-  }
- 
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    var new_user = null
-    try {
-      var token = await loginService.login({ username, password })
-      window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(token))
-      setUsername('')
-      setPassword('')
-      new_user = await userService.getOne(token.id)
-      setBlogs(new_user.blogs)
-      blogService.setToken(token.token)
-      setUser(new_user)
-      setAlertMessage('Login succesfull')
-      setTimeout(() => setAlertMessage(null), 5000)
-    } catch (exception) {
-      setErrorMessage('Invalid login credentials!')
-      setUsername('')
-      setPassword('')
-      setTimeout(() => setErrorMessage(null), 5000)
-    }
   }
 
   return (
