@@ -15,10 +15,6 @@ import './index.css'
 
 const App = () => {
   //states
-  const [blogs, setBlogs] = useState([])
-  const [blogTitle, setBlogTitle] = useState('')
-  const [blogAuthor, setBlogAuthor] = useState('')
-  const [blogUrl, setBlogUrl] = useState('')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -36,20 +32,11 @@ const App = () => {
   }, [])
 
   //handlers
-  const handleNewBlog = async (event) => {
+  const createNewBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
-    event.preventDefault()
-    const blogObject = {
-      title: blogTitle,
-      author: blogAuthor,
-      url: blogUrl,
-      userId: user.id
-    }
+    blogObject.userId = user.id
     try {
       const response = await blogService.create(blogObject)
-      setBlogAuthor('')
-      setBlogTitle('')
-      setBlogUrl('')
       setAlertMessage(`${blogTitle} by ${blogAuthor} added succesfully!`)
       setTimeout(() => setAlertMessage(null), 5000)
       return response.data
@@ -63,7 +50,6 @@ const App = () => {
     event.preventDefault()
     window.localStorage.clear()
     setUser(null)
-    setBlogs([])
     window.location.reload()
   }
 
@@ -76,7 +62,6 @@ const App = () => {
       setUsername('')
       setPassword('')
       new_user = await userService.getOne(token.id)
-      setBlogs(new_user.blogs)
       blogService.setToken(token.token)
       setUser(new_user)
       setAlertMessage('Login succesfull')
@@ -88,10 +73,6 @@ const App = () => {
       setTimeout(() => setErrorMessage(null), 5000)
     }
   }
-  
-  //const handleChange = ({ target, setter }) => {
-  //  setter(target.value)
-  //}
 
   const handleUsernameChange = ({ target }) => {
     setUsername(target.value)
@@ -99,18 +80,6 @@ const App = () => {
 
   const handlePasswordChange = ({ target }) => {
     setPassword(target.value)
-  }
-
-  const handleTitleChange = ({ target }) => {
-    setBlogTitle(target.value)
-  }
-
-  const handleAuthorChange = ({ target }) => {
-    setBlogAuthor(target.value)
-  }
-
-  const handleUrlChange = ({ target }) => {
-    setBlogUrl(target.value)
   }
 
   //forms
@@ -126,18 +95,13 @@ const App = () => {
   }
 
   const blogFormRef = useRef()
+
   const blogForm = () => {
     return (
       <div>
         <Togglable buttonLabel='Create a new blog' ref={blogFormRef}>
           <Create
-            handleNewBlog={handleNewBlog}
-            handleTitleChange={handleTitleChange}
-            handleAuthorChange={handleAuthorChange}
-            handleUrlChange={handleUrlChange}
-            blogTitle={blogTitle}
-            blogAuthor={blogAuthor}
-            blogUrl={blogUrl}/>
+            createNewBlog={createNewBlog}/>
         </Togglable>
       </div>
     )
