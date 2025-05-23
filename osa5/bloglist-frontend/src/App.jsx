@@ -15,8 +15,7 @@ import './index.css'
 
 const App = () => {
   //states
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+
   const [user, setUser] = useState(null)
   const [alertMessage, setAlertMessage] = useState(null)
   const [errorMessage , setErrorMessage] = useState(null)
@@ -28,6 +27,8 @@ const App = () => {
       const token = JSON.parse(loggedTokenJSON)
       userService.getOne(token.id).then(user => setUser(user))
       blogService.setToken(token.token)
+    } else {
+      loginRef.current.toggleVisibility()
     }
   }, [])
 
@@ -53,14 +54,11 @@ const App = () => {
     window.location.reload()
   }
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
+  const handleLogin = async ({ username, password }) => {
     var new_user = null
     try {
       var token = await loginService.login({ username, password })
       window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(token))
-      setUsername('')
-      setPassword('')
       new_user = await userService.getOne(token.id)
       blogService.setToken(token.token)
       setUser(new_user)
@@ -68,34 +66,23 @@ const App = () => {
       setTimeout(() => setAlertMessage(null), 5000)
     } catch (exception) {
       setErrorMessage('Invalid login credentials!')
-      setUsername('')
-      setPassword('')
       setTimeout(() => setErrorMessage(null), 5000)
     }
   }
 
-  const handleUsernameChange = ({ target }) => {
-    setUsername(target.value)
-  } 
-
-  const handlePasswordChange = ({ target }) => {
-    setPassword(target.value)
-  }
-
   //forms
+  const loginRef = useRef()
   const loginForm = () => {
     return (
       <div>
-        <LoginForm handleLogin={handleLogin}
-          handlePasswordChange={handlePasswordChange}
-          handleUsernameChange={handleUsernameChange}
-          password={password} username={username}/>
+        <Togglable ref={loginRef}>
+          <LoginForm handleLogin={handleLogin}/>
+        </Togglable>
       </div>
     )
   }
 
   const blogFormRef = useRef()
-
   const blogForm = () => {
     return (
       <div>
